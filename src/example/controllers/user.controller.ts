@@ -9,12 +9,13 @@ import { Param } from '../../lib/decorators/param.decorator';
 import { FooService } from '../services/foo.service';
 import { Injectable } from 'type-chef-di';
 import { UpperCasePipe } from '../services/upper.pipe';
+import { Get } from '../../lib/decorators/method/get.decorator';
 
 @Injectable()
 export class UserController {
     constructor(private readonly foo: FooService) {}
 
-    @Endpoint({ method: 'get', route: '/users' })
+    @Get('/test')
     getUsers(
         @Req({}) req: Request,
         @Res({}) res: Response,
