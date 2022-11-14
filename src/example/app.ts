@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
-import { UserController } from './controllers/User.controller';
-import { ServerBuilder } from '../lib/ServerBuilder';
+import { UserController } from './controllers/user.controller';
+import { ServerBuilder } from '../lib/server-builder';
 
 async function main() {
     const app: Express = express();

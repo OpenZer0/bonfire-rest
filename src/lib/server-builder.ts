@@ -1,7 +1,7 @@
 import { Container } from 'type-chef-di';
 import { Constants } from './Constants';
 import express from 'express';
-import { expressMap } from './decoratorMap';
+import { expressMap } from './decorator-map';
 import * as bodyParser from 'body-parser';
 import { Logger } from './common/logger/logger';
 import { Utils } from './common/Utils';

@@ -1,15 +1,15 @@
-import { Endpoint } from '../src/lib/decorators/Endpoint';
-import { Req } from '../src/lib/decorators/Request.decorator';
-import { Res } from '../src/lib/decorators/Response.decorator';
-import { Query } from '../src/lib/decorators/Query.decorator';
-import { Headers } from '../src/lib/decorators/Headers.decorator';
+import { EndpointDecorator } from '../src/lib/decorators/endpoint.decorator';
+import { Req } from '../src/lib/decorators/request.decorator';
+import { Res } from '../src/lib/decorators/response.decorator';
+import { Query } from '../src/lib/decorators/query.decorator';
+import { Headers } from '../src/lib/decorators/headers.decorator';
 import express, { Express, Request, Response } from 'express';
-import { ServerBuilder } from '../src/lib/ServerBuilder';
-import { Body } from '../src/lib/decorators/Body.decorator';
+import { ServerBuilder } from '../src/lib/server-builder';
+import { Body } from '../src/lib/decorators/body.decorator';
 import supertest from 'supertest';
 
 export class UserController {
-    @Endpoint({ method: 'get', route: '/users' })
+    @EndpointDecorator({ method: 'get', route: '/users' })
     getUsers(
         @Req({}) req: Request,
         @Res({}) res: Response,
@@ -20,7 +20,7 @@ export class UserController {
         res.send([{ username: 'krisz' }]);
     }
 
-    @Endpoint({ method: 'post', route: '/users' })
+    @EndpointDecorator({ method: 'post', route: '/users' })
     getUsers2(@Req() req: Request, @Res() res: Response, @Body() body: any, @Body() body2: any) {
         console.log(body);
         res.send([{ username: 'krisz' }]);

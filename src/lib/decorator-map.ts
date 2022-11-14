@@ -1,8 +1,8 @@
 import express from 'express';
-import { IBodyOptions } from './decorators/Body.decorator';
+import { IBodyOptions } from './decorators/body.decorator';
 import { Constants } from './Constants';
-import { IHeaderOptions } from './decorators/Headers.decorator';
-import { IQueryOptions } from './decorators/Query.decorator';
+import { IHeaderOptions } from './decorators/headers.decorator';
+import { IQueryOptions } from './decorators/query.decorator';
 import { IParamOptions } from './decorators/param.decorator';
 
 export interface IExpressMap {

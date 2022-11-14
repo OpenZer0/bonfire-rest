@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Constants } from '../Constants';
 
-export function Endpoint(options: { method: 'get' | 'post'; route: string }) {
+export function EndpointDecorator(options: { method: 'get' | 'post'; route: string }) {
     return (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
         const metadata: any[] = Reflect.getMetadata(Constants.ENDPOINT_KEY, target.constructor) || [];
         // @ts-ignore

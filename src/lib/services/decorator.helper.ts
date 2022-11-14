@@ -1,4 +1,4 @@
-import { IExpressMap } from '../decoratorMap';
+import { IExpressMap } from '../decorator-map';
 
 export function saveExpressMeta(id: string, target, key, parameterIndex, options) {
     const metadata: { index: number; id: keyof IExpressMap }[] = Reflect.getMetadata(key, target.constructor) || [];
