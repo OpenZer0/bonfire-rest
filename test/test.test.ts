@@ -1,4 +1,4 @@
-import { EndpointDecorator } from '../src/lib/decorators/endpoint.decorator';
+import { Endpoint } from '../src/lib/decorators/endpoint.decorator';
 import { Req } from '../src/lib/decorators/request.decorator';
 import { Res } from '../src/lib/decorators/response.decorator';
 import { Query } from '../src/lib/decorators/query.decorator';
@@ -9,7 +9,7 @@ import { Body } from '../src/lib/decorators/body.decorator';
 import supertest from 'supertest';
 
 export class UserController {
-    @EndpointDecorator({ method: 'get', route: '/users' })
+    @Endpoint({ method: 'get', route: '/users' })
     getUsers(
         @Req({}) req: Request,
         @Res({}) res: Response,
@@ -20,7 +20,7 @@ export class UserController {
         res.send([{ username: 'krisz' }]);
     }
 
-    @EndpointDecorator({ method: 'post', route: '/users' })
+    @Endpoint({ method: 'post', route: '/users' })
     getUsers2(@Req() req: Request, @Res() res: Response, @Body() body: any, @Body() body2: any) {
         console.log(body);
         res.send([{ username: 'krisz' }]);

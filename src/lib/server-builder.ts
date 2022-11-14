@@ -1,10 +1,11 @@
-import { Container } from 'type-chef-di';
+import { Container, Type } from 'type-chef-di';
 import { Constants } from './Constants';
 import express from 'express';
 import { expressMap } from './decorator-map';
 import * as bodyParser from 'body-parser';
 import { Logger } from './common/logger/logger';
 import { Utils } from './common/Utils';
+import { IPipe } from './services/pipe/pipe.interface';
 
 export class ServerBuilder {
     private static readonly logger = new Logger(ServerBuilder.name);
@@ -21,36 +22,56 @@ export class ServerBuilder {
         return options.express;
     }
 
-    static buildEndpointArgs(req, res, controllerClass: any, endpoint: IEndpointMeta): any[] {
-        const params: { id: string; options: any }[] = Reflect.getMetadata(endpoint.fn, controllerClass);
-        return params.map((param) => {
-            if (!param) {
-                throw new Error("Can't resolve param");
-            }
+    static async buildEndpointArgs(req, res, controllerClass: any, endpoint: IEndpointMeta): Promise<any[]> {
+        const params: { id: string; options: any; pipes: Type<IPipe>[] }[] = Reflect.getMetadata(
+            endpoint.fn,
+            controllerClass,
+        );
+        this.logger.debug(`${endpoint.fn} function meta: ${JSON.stringify(params, null, 2)}`);
+        return Promise.all(
+            params.map(async (param) => {
+                if (!param) {
+                    throw new Error("Can't resolve param");
+                }
 
-            this.logger.debug(`Try to resolve: @${param.id} decorator`);
-            const result = expressMap[param.id](req, res, param.options);
-            if (!Utils.isCyclic(result)) {
-                this.logger.debug(`@${param.id} = ${JSON.stringify(result, null, 2)}`);
-            }
-            return result;
-        });
+                this.logger.debug(`Try to resolve: @${param.id} decorator`);
+                let result = expressMap[param.id](req, res, param.options);
+                if (param.pipes.length > 0) {
+                    this.logger.debug(`Use pipes: ${param.pipes.map((p) => p.name).join(', ')}`);
+                    let pipeResultVal = result;
+                    for (const pipe of param.pipes) {
+                        const resolvedPipe = await this.container.resolveByType(pipe);
+                        pipeResultVal = resolvedPipe.pipe(pipeResultVal);
+                    }
+                    result = pipeResultVal;
+                }
+
+                if (!Utils.isCyclic(result)) {
+                    this.logger.debug(`@${param.id} = ${JSON.stringify(result, null, 2)}`);
+                }
+                return result;
+            }),
+        );
     }
 
     static async setupController(server: express.Express, controllerType: any) {
         const meta: IEndpointMeta[] = Reflect.getMetadata(Constants.ENDPOINT_KEY, controllerType);
         const controller = await this.container.resolveByType(controllerType);
         for (const endpoint of meta) {
-            this.logger.log(`Add route: ${endpoint.method} ${endpoint.route}`);
-            server[endpoint.method](endpoint.route, (req, res) => {
+            this.logger.log(`Add route: ${endpoint.method.toUpperCase()} ${endpoint.route}`);
+            server[endpoint.method](endpoint.route, async (req, res) => {
                 this.logger.debug(
                     'Resolved args',
-                    ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint).map((t) => t?.constructor),
+                    (await ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint)).map(
+                        (t) => t?.constructor,
+                    ),
                 );
                 this.logger.log(
                     `Call: ${endpoint.method.toUpperCase()} ${endpoint.route} in ${controller.constructor.name}`,
                 );
-                return controller[endpoint.fn](...ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint));
+                return controller[endpoint.fn](
+                    ...(await ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint)),
+                );
             });
         }
     }

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Body } from '../../lib/decorators/body.decorator';
-import { EndpointDecorator } from '../../lib/decorators/endpoint.decorator';
+import { Endpoint } from '../../lib/decorators/endpoint.decorator';
 import { Req } from '../../lib/decorators/request.decorator';
 import { Res } from '../../lib/decorators/response.decorator';
 import { Query } from '../../lib/decorators/query.decorator';
@@ -8,23 +8,25 @@ import { Headers } from '../../lib/decorators/headers.decorator';
 import { Param } from '../../lib/decorators/param.decorator';
 import { FooService } from '../services/foo.service';
 import { Injectable } from 'type-chef-di';
+import { UpperCasePipe } from '../services/upper.pipe';
 
 @Injectable()
 export class UserController {
     constructor(private readonly foo: FooService) {}
 
-    @EndpointDecorator({ method: 'get', route: '/users' })
+    @Endpoint({ method: 'get', route: '/users' })
     getUsers(
         @Req({}) req: Request,
         @Res({}) res: Response,
-        @Query({ key: 'test' }) query: any,
-        @Headers({ key: 'host' }) headers,
+        @Query({ key: 'test' }, [UpperCasePipe]) query: any,
+        @Headers({ key: 'host' }, [UpperCasePipe]) headers,
     ) {
+        console.log(this.foo.getStr());
         console.log(this.foo.getStr());
         res.send([{ usnername: 'krisz' }]);
     }
 
-    @EndpointDecorator({ method: 'get', route: '/users/:id' })
+    @Endpoint({ method: 'get', route: '/users/:id' })
     getUsersByid(
         @Req({}) req: Request,
         @Res({}) res: Response,
@@ -36,7 +38,7 @@ export class UserController {
         res.send({ usnername: id });
     }
 
-    @EndpointDecorator({ method: 'post', route: '/users' })
+    @Endpoint({ method: 'post', route: '/users' })
     getUsers2(@Req() req: Request, @Res() res: Response, @Body() body: any, @Body() body2: any) {
         res.send([{ usnername: 'krisz' }]);
     }
