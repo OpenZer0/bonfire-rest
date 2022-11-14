@@ -4,6 +4,7 @@ import express from 'express';
 import { expressMap } from './decoratorMap';
 import * as bodyParser from 'body-parser';
 import { Logger } from './common/logger/logger';
+import { Utils } from './common/Utils';
 
 export class ServerBuilder {
     private static readonly logger = new Logger(ServerBuilder.name);
@@ -26,7 +27,13 @@ export class ServerBuilder {
             if (!param) {
                 throw new Error("Can't resolve param");
             }
-            return expressMap[param.id](req, res, param.options);
+
+            this.logger.debug(`Try to resolve: @${param.id} decorator`);
+            const result = expressMap[param.id](req, res, param.options);
+            if (!Utils.isCyclic(result)) {
+                this.logger.debug(`@${param.id} = ${JSON.stringify(result, null, 2)}`);
+            }
+            return result;
         });
     }
 
@@ -36,12 +43,12 @@ export class ServerBuilder {
         for (const endpoint of meta) {
             this.logger.log(`Add route: ${endpoint.method} ${endpoint.route}`);
             server[endpoint.method](endpoint.route, (req, res) => {
-                console.log(
-                    'resolved args',
+                this.logger.debug(
+                    'Resolved args',
                     ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint).map((t) => t?.constructor),
                 );
-                this.logger.debug(
-                    `Call: ${endpoint.method.toUpperCase()} ${endpoint.route} ${controller.constructor.name}`,
+                this.logger.log(
+                    `Call: ${endpoint.method.toUpperCase()} ${endpoint.route} in ${controller.constructor.name}`,
                 );
                 return controller[endpoint.fn](...ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint));
             });

@@ -14,13 +14,11 @@ export class UserController {
         @Query({ key: 'test' }) query: any,
         @Headers({ key: 'host' }) headers,
     ) {
-        console.log(query, headers);
         res.send([{ usnername: 'krisz' }]);
     }
 
     @Endpoint({ method: 'post', route: '/users' })
     getUsers2(@Req() req: Request, @Res() res: Response, @Body() body: any, @Body() body2: any) {
-        console.log(body)
         res.send([{ usnername: 'krisz' }]);
     }
 }
