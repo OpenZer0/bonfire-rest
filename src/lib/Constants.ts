@@ -5,4 +5,5 @@ export const Constants = {
     BODY: 'BODY',
     QUERY: 'QUERY',
     HEADERS: 'HEADERS',
+    ROUTE_PARAM: 'ROUTE_PARAM',
 };
