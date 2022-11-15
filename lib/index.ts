@@ -10,4 +10,5 @@ export * from './decorators/method/get.decorator';
 export * from './decorators/method/delete.decorator';
 export * from './decorators/method/patch.decorator';
 export * from './decorators/method/post.decorator';
+export * from './decorators/controller.decorator';
 export * from 'type-chef-di';

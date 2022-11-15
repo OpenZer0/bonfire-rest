@@ -7,11 +7,11 @@ import { Query } from '../../lib/decorators/query.decorator';
 import { Headers } from '../../lib/decorators/headers.decorator';
 import { Param } from '../../lib/decorators/param.decorator';
 import { FooService } from '../services/foo.service';
-import { Injectable } from 'type-chef-di';
 import { UpperCasePipe } from '../services/upper.pipe';
 import { Get } from '../../lib/decorators/method/get.decorator';
+import {Controller} from "../../lib";
 
-@Injectable()
+@Controller()
 export class UserController {
     constructor(private readonly foo: FooService) {}
 
