@@ -10,6 +10,7 @@ import { FooService } from '../services/foo.service';
 import { UpperCasePipe } from '../services/upper.pipe';
 import { Get } from '../../lib/decorators/method/get.decorator';
 import {Controller} from "../../lib";
+import {UserValidator} from "../user.validator";
 
 @Controller()
 export class UserController {
@@ -40,7 +41,7 @@ export class UserController {
     }
 
     @Endpoint({ method: 'post', route: '/users' })
-    getUsers2(@Req() req: Request, @Res() res: Response, @Body() body: any, @Body() body2: any) {
-        res.send([{ usnername: 'krisz' }]);
+    getUsers2(@Body('username') body: UserValidator) {
+       return body
     }
 }

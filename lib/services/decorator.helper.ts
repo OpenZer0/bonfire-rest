@@ -10,10 +10,17 @@ export function saveExpressMeta<O = any>(
     options: O,
     pipes: Type<IPipe>[] = [],
 ) {
-    const metadata: { index: number; id: keyof IExpressMap }[] = Reflect.getMetadata(key, target.constructor) || [];
-    // console.log(pipes.map((p) => p.constructor))
-    // @ts-ignore
-    metadata[parameterIndex] = { options, index: parameterIndex, id, pipes: pipes };
+    const fnParamTypes = Reflect.getMetadata('design:paramtypes', target, key) || [];
+    const metadata: { index: number; id: keyof IExpressMap; options: O; pipes: Type<IPipe>[]; paramType: any }[] =
+        Reflect.getMetadata(key, target.constructor) || [];
 
+    // @ts-ignore
+    metadata[parameterIndex] = {
+        index: parameterIndex,
+        options,
+        id,
+        pipes: pipes,
+        paramType: fnParamTypes[parameterIndex],
+    };
     Reflect.defineMetadata(key, metadata, target.constructor);
 }

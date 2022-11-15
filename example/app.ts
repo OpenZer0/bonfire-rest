@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import { UserController } from './controllers/user.controller';
 import { ServerBuilder } from '../lib/server-builder';
+import {ValidationPipe} from "../lib/services/pipe/validation.pipe";
 
 async function main() {
     const app: Express = express();
@@ -9,6 +10,7 @@ async function main() {
     const server = await ServerBuilder.build({
         controllers: [UserController],
         express: app,
+        globalPipes: [ValidationPipe]
     });
 
     server.listen(port, () => {
