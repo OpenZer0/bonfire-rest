@@ -1,6 +1,7 @@
 import { LogColors } from './log-colors';
+import { ILogger } from './logger.interface';
 
-export class Logger {
+export class Logger implements ILogger {
     constructor(private readonly ctx?: string) {}
 
     getCtx() {

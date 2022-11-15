@@ -24,7 +24,7 @@ export class UserController {
     ) {
         console.log(this.foo.getStr());
         console.log(this.foo.getStr());
-        res.send([{ usnername: 'krisz' }]);
+        return [{ usnername: 'krisz' }];
     }
 
     @Endpoint({ method: 'get', route: '/users/:id' })

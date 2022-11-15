@@ -3,16 +3,24 @@ import { Constants } from './Constants';
 import express from 'express';
 import { expressMap } from './decorator-map';
 import * as bodyParser from 'body-parser';
-import { Logger } from './common/logger/logger';
 import { Utils } from './common/Utils';
 import { IPipe } from './services/pipe/pipe.interface';
+import { ILogger } from './common/logger/logger.interface';
+import { Logger } from './common/logger/logger';
 
 export class ServerBuilder {
-    private static readonly logger = new Logger(ServerBuilder.name);
+    private static logger: ILogger = new Logger(ServerBuilder.name);
 
     static container = new Container({ enableAutoCreate: true });
 
-    static async build(options: { controllers: any[]; express?: express.Express }): Promise<express.Express> {
+    static async build(options: {
+        controllers: any[];
+        express?: express.Express;
+        logger?: ILogger;
+    }): Promise<express.Express> {
+        if (options.logger) {
+            ServerBuilder.logger = options.logger;
+        }
         options.express = options.express ? express() : options.express;
         options.express.use(bodyParser.json());
         this.container.registerTypes(options.controllers);
@@ -59,7 +67,7 @@ export class ServerBuilder {
         const controller = await this.container.resolveByType(controllerType);
         for (const endpoint of meta) {
             this.logger.log(`Add route: ${endpoint.method.toUpperCase()} ${endpoint.route}`);
-            server[endpoint.method](endpoint.route, async (req, res) => {
+            server[endpoint.method](endpoint.route, async (req: express.Request, res: express.Response) => {
                 this.logger.debug(
                     'Resolved args',
                     (await ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint)).map(
@@ -69,9 +77,20 @@ export class ServerBuilder {
                 this.logger.log(
                     `Call: ${endpoint.method.toUpperCase()} ${endpoint.route} in ${controller.constructor.name}`,
                 );
-                return controller[endpoint.fn](
+                const result = await controller[endpoint.fn](
                     ...(await ServerBuilder.buildEndpointArgs(req, res, controllerType, endpoint)),
                 );
+
+                if (result) {
+                    switch (typeof result) {
+                        case 'object':
+                            res.json(result);
+                            break;
+                        case 'number' || 'string': {
+                            res.send(result);
+                        }
+                    }
+                }
             });
         }
     }
