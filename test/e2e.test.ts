@@ -1,8 +1,8 @@
 import express, { Express } from 'express';
-import { ServerBuilder } from '../src/lib/server-builder';
+import { ServerBuilder } from '../lib/server-builder';
 import { E2eController } from './entities/e2e.controller';
 import supertest from 'supertest';
-import { Logger2 } from '../src/example/logger';
+import { Logger2 } from '../example/logger';
 
 describe('e2e', () => {
     let server: Express;

@@ -1,14 +1,15 @@
 {
-  "name": "bonefire-rest",
+  "name": "bonfire-rest",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare": "husky install",
     "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
-    "start": "ts-node-dev src/example/app.ts",
+    "start": "ts-node-dev example/app.ts",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "build": "tsc -p .",
+    "local-publish": "rm -rf ./build && npm run build  && cp *.json ./build && cp *.md ./build && npm publish ./build --registry http://localhost:4873/"
   },
   "repository": {
     "type": "git",
