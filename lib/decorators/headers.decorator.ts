@@ -5,11 +5,11 @@ import { Type } from 'type-chef-di';
 import { IPipe } from '../services/pipe/pipe.interface';
 
 export interface IHeaderOptions {
-    key: string;
+    key?: string;
 }
 
-export function Headers(options?: IHeaderOptions, pipes: Type<IPipe>[] = []) {
+export function Headers(propKey: string, pipes: Type<IPipe>[] = []) {
     return (target: any, key: string | symbol, parameterIndex: number) => {
-        saveExpressMeta(Constants.HEADERS, target, key, parameterIndex, options, pipes);
+        saveExpressMeta<IHeaderOptions>(Constants.HEADERS, target, key, parameterIndex, { key: propKey }, pipes);
     };
 }

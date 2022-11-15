@@ -4,7 +4,7 @@
     "experimentalDecorators": true,                   /* Enable experimental support for TC39 stage 2 draft decorators. */
     "emitDecoratorMetadata": true,                    /* Emit design-type metadata for decorated declarations in source files. */
     "module": "commonjs",                                /* Specify what module code is generated. */
-    "rootDir": "./lib",
+//    "rootDir": "./lib",
     "outDir": "build",                                   /* Specify an output folder for all emitted files. */
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
@@ -15,6 +15,6 @@
     "removeComments": false,
     "declaration": true
   },
-  "exclude": ["build", "node_modules", "**/*.spec.ts", "test/**", "examples", "jest.config.ts"],
+  "exclude": ["build", "node_modules", "**/*.spec.ts", "test/**", "./example/**/*.ts", "jest.config.ts"],
   "include": ["./lib/**/*"]
 }

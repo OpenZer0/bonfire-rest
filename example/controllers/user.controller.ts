@@ -19,8 +19,8 @@ export class UserController {
     getUsers(
         @Req({}) req: Request,
         @Res({}) res: Response,
-        @Query({ key: 'test' }, [UpperCasePipe]) query: any,
-        @Headers({ key: 'host' }, [UpperCasePipe]) headers,
+        @Query( 'test', [UpperCasePipe]) query: any,
+        @Headers('host', [UpperCasePipe]) headers,
     ) {
         console.log(this.foo.getStr());
         console.log(this.foo.getStr());
@@ -31,9 +31,9 @@ export class UserController {
     getUsersByid(
         @Req({}) req: Request,
         @Res({}) res: Response,
-        @Query({ key: 'test' }) query: any,
-        @Headers({ key: 'host' }) headers,
-        @Param({ key: 'id' }) id: string,
+        @Query('test' ) query: any,
+        @Headers('host' ) headers,
+        @Param('id' ) id: string,
     ) {
         console.log('id', id);
         res.send({ usnername: id });

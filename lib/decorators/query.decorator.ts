@@ -5,11 +5,11 @@ import { IPipe } from '../services/pipe/pipe.interface';
 import { Type } from 'type-chef-di';
 
 export interface IQueryOptions {
-    key: string;
+    key?: string;
 }
 
-export function Query(options?: IQueryOptions, pipes: Type<IPipe>[] = []) {
+export function Query(propKey?: string, pipes: Type<IPipe>[] = []) {
     return (target: any, key: string | symbol, parameterIndex: number) => {
-        saveExpressMeta(Constants.QUERY, target, key, parameterIndex, options, pipes);
+        saveExpressMeta<IQueryOptions>(Constants.QUERY, target, key, parameterIndex, { key: propKey }, pipes);
     };
 }

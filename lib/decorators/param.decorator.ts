@@ -5,11 +5,11 @@ import { Type } from 'type-chef-di';
 import { IPipe } from '../services/pipe/pipe.interface';
 
 export interface IParamOptions {
-    key: string;
+    key?: string;
 }
 
-export function Param(options?: IParamOptions, pipes: Type<IPipe>[] = []) {
+export function Param(propKey?: string, pipes: Type<IPipe>[] = []) {
     return (target: any, key: string | symbol, parameterIndex: number) => {
-        saveExpressMeta(Constants.ROUTE_PARAM, target, key, parameterIndex, options, pipes);
+        saveExpressMeta<IParamOptions>(Constants.ROUTE_PARAM, target, key, parameterIndex, { key: propKey }, pipes);
     };
 }

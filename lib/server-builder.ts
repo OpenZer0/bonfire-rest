@@ -1,6 +1,6 @@
 import { Container, Type } from 'type-chef-di';
 import { Constants } from './Constants';
-import express from 'express';
+import express, { Express } from 'express';
 import { expressMap } from './decorator-map';
 import * as bodyParser from 'body-parser';
 import { Utils } from './common/Utils';
@@ -13,11 +13,7 @@ export class ServerBuilder {
 
     static container = new Container({ enableAutoCreate: true });
 
-    static async build(options: {
-        controllers: any[];
-        express?: express.Express;
-        logger?: ILogger;
-    }): Promise<express.Express> {
+    static async build(options: { controllers: any[]; express?: express.Express; logger?: ILogger }): Promise<Express> {
         if (options.logger) {
             ServerBuilder.logger = options.logger;
         }
@@ -34,7 +30,7 @@ export class ServerBuilder {
         const params: { id: string; options: any; pipes: Type<IPipe>[] }[] = Reflect.getMetadata(
             endpoint.fn,
             controllerClass,
-        );
+        ) || [];
         this.logger.debug(`${endpoint.fn} function meta: ${JSON.stringify(params, null, 2)}`);
         return Promise.all(
             params.map(async (param) => {

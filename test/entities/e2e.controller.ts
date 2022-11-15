@@ -21,16 +21,16 @@ export class E2eController {
     }
 
     @Get('/header')
-    test2(@Res() res: Response, @Headers({ key: 'custom-header' }) header: string) {
+    test2(@Res() res: Response, @Headers('custom-header' ) header: string) {
         res.json({ header: header });
     }
 
     @Post('/param/:id')
-    test3(@Res() res: Response, @Param({ key: 'id' }) id: string) {
+    test3(@Res() res: Response, @Param( 'id' ) id: string) {
         res.json({ param: id });
     }
     @Post('/pipe/:id')
-    test4(@Res() res: Response, @Param({ key: 'id' }, [UpperCasePipe]) id: string) {
+    test4(@Res() res: Response, @Param( 'id' , [UpperCasePipe]) id: string) {
         res.json({ param: id });
     }
 }
