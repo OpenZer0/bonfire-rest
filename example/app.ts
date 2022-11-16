@@ -9,7 +9,7 @@ async function main() {
 
     const server = await ServerBuilder.build({
         controllers: [UserController],
-        express: app,
+        server: app,
         globalPipes: [ValidationPipe]
     });
 

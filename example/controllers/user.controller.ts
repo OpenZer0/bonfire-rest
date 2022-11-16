@@ -21,11 +21,11 @@ export class UserController {
         @Req({}) req: Request,
         @Res({}) res: Response,
         @Query( 'test', [UpperCasePipe]) query: any,
-        @Headers('host', [UpperCasePipe]) headers,
+        @Headers('host', [UpperCasePipe]) headers: string,
     ) {
         console.log(this.foo.getStr());
         console.log(this.foo.getStr());
-        return [{ usnername: 'krisz' }];
+        return [{ usnername: headers}];
     }
 
     @Endpoint({ method: 'get', route: '/users/:id' })

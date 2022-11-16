@@ -10,7 +10,7 @@ describe('e2e', () => {
     beforeAll(async () => {
         server = await ServerBuilder.build({
             controllers: [E2eController],
-            express: express(),
+            server: express(),
             logger: new Logger2(),
         });
         requestWithSupertest = supertest(server);
