@@ -10,37 +10,65 @@ import { IEndpointMeta, IFunctionParamMeta } from './server-builder';
 import { IResponseHandler } from './response.handler';
 import { expressMap } from './decorator-map';
 import { Utils } from './common/Utils';
+import * as path from 'path';
+import { IMiddleware } from './middleware/middleware.interface';
 
 export interface IServerContext {
     controllers: any[];
     server?: express.Express;
     logger?: ILogger;
     globalPipes?: Type<IPipe>[];
+    globalPrefix?: string;
+    globalMiddlewares?: Type<IMiddleware>[];
+    auth?: {
+        isBearer: boolean;
+        secret: string;
+    };
 }
 
 export class BonfireServer {
     static container = new Container({ enableAutoCreate: true });
-    private logger: ILogger = new Logger(BonfireServer.name);
+    private logger: ILogger;
 
     constructor(
         private ctx: IServerContext,
         private readonly errorHandler: IErrorHandler,
         private readonly responseHandler: IResponseHandler,
-    ) {
-        this.prepare();
-    }
+    ) {}
 
-    private prepare() {
-        this.ctx = { ...{ controllers: [], server: express(), logger: new Logger(), globalPipes: [] }, ...this.ctx };
-        this.logger = this.ctx.logger;
+    private async prepare() {
+        this.ctx = {
+            ...{
+                controllers: [],
+                server: express(),
+                logger: new Logger(),
+                globalPipes: [],
+                globalPrefix: '/',
+                globalMiddlewares: [],
+            },
+            ...this.ctx,
+        };
+        this.ctx.globalPrefix = `/${this.ctx.globalPrefix}`;
+        this.logger = this.ctx.logger || new Logger(BonfireServer.name);
         this.ctx.server.use(bodyParser.json());
+
         BonfireServer.container.registerTypes(this.ctx.controllers);
+        BonfireServer.container.registerTypes(this.ctx.globalMiddlewares);
+        BonfireServer.container.register('ctx', this.ctx);
+
+        for (const middleware of this.ctx.globalMiddlewares) {
+            this.logger.log('Use middleware: ', middleware);
+            const resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
+            this.ctx.server.use(async (req, res, next) => await resolvedMiddleware.handle(req, res, next));
+        }
+
         if (this.ctx.globalPipes.length > 0) {
             BonfireServer.container.registerTypes(this.ctx.globalPipes);
         }
     }
 
     async build() {
+        await this.prepare();
         for (const controller of this.ctx.controllers) {
             await this.setupController(controller);
         }
@@ -61,8 +89,10 @@ export class BonfireServer {
     }
 
     private async createEndpoint(endpoint: IEndpointMeta, controllerType: Type, controller: any) {
-        this.logger.log(`Add route: ${endpoint.method.toUpperCase()} ${endpoint.route}`);
-        await this.ctx.server[endpoint.method](endpoint.route, async (req: express.Request, res: express.Response) => {
+        const controllerMeta: { prefix?: string } = Reflect.getMetadata(Constants.CONTROLLER_KEY, controllerType);
+        const route = path.join(`/${controllerMeta?.prefix || '/'}`, this.ctx.globalPrefix, endpoint.route);
+        this.logger.log(`Add route: ${endpoint.method.toUpperCase()} ${route}`);
+        await this.ctx.server[endpoint.method](route, async (req: express.Request, res: express.Response) => {
             try {
                 const result = await this.handleRequest(req, res, controller, controllerType, endpoint);
                 this.responseHandler.handle(result, res);

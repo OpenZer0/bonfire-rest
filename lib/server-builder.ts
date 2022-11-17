@@ -2,9 +2,10 @@ import { Type } from 'type-chef-di';
 import express, { Express } from 'express';
 import { IExpressMap } from './decorator-map';
 import { IPipe } from './services/pipe/pipe.interface';
-import { BonfireServer, IServerContext } from './BonfireServer';
+import { BonfireServer, IServerContext } from './bonfire-server';
 import { ErrorHandler } from './error/error-handler';
 import { ResponseHandler } from './response.handler';
+import { Logger } from './common/logger/logger';
 
 export interface IFunctionParamMeta {
     index: number;
@@ -15,7 +16,11 @@ export interface IFunctionParamMeta {
 }
 export class ServerBuilder {
     static async build(options: IServerContext): Promise<express.Express> {
-        const server = new BonfireServer({ ...options }, new ErrorHandler(), new ResponseHandler());
+        const server = new BonfireServer(
+            { logger: new Logger(BonfireServer.name), ...options },
+            new ErrorHandler(),
+            new ResponseHandler(),
+        );
         return (await server.build()).getExpress();
     }
 }

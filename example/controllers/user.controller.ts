@@ -12,26 +12,25 @@ import { Get } from '../../lib/decorators/method/get.decorator';
 import {Controller} from "../../lib";
 import {UserValidator} from "../user.validator";
 
-@Controller()
+@Controller({prefix: "ddd"})
 export class UserController {
     constructor(private readonly foo: FooService) {}
 
     @Get('/test')
     getUsers(
-        @Req({}) req: Request,
-        @Res({}) res: Response,
+        @Req() req: Request,
+        @Res() res: Response,
         @Query( 'test', [UpperCasePipe]) query: any,
         @Headers('host', [UpperCasePipe]) headers: string,
     ) {
-        console.log(this.foo.getStr());
         console.log(this.foo.getStr());
         return [{ usnername: headers}];
     }
 
     @Endpoint({ method: 'get', route: '/users/:id' })
     getUsersByid(
-        @Req({}) req: Request,
-        @Res({}) res: Response,
+        @Req() req: Request,
+        @Res() res: Response,
         @Query('test' ) query: any,
         @Headers('host' ) headers,
         @Param('id' ) id: string,
@@ -39,7 +38,7 @@ export class UserController {
         console.log('id', id);
         res.send({ usnername: id });
     }
-
+    
     @Endpoint({ method: 'post', route: '/users' })
     getUsers2(@Body('username') body: UserValidator) {
        return body

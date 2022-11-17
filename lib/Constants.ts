@@ -6,4 +6,5 @@ export const Constants = {
     QUERY: 'QUERY',
     HEADERS: 'HEADERS',
     ROUTE_PARAM: 'ROUTE_PARAM',
+    CONTROLLER_KEY: 'CONTROLLER_KEY',
 };

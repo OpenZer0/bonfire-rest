@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import { UserController } from './controllers/user.controller';
 import { ServerBuilder } from '../lib/server-builder';
 import {ValidationPipe} from "../lib/services/pipe/validation.pipe";
+import { LogMiddleware } from "./middlewares/log.middleware";
 
 async function main() {
     const app: Express = express();
@@ -10,7 +11,9 @@ async function main() {
     const server = await ServerBuilder.build({
         controllers: [UserController],
         server: app,
-        globalPipes: [ValidationPipe]
+        globalPipes: [ValidationPipe],
+        globalPrefix: "api",
+        globalMiddlewares: [LogMiddleware]
     });
 
     server.listen(port, () => {
