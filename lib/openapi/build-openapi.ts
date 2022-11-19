@@ -6,6 +6,7 @@ import e from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as path from 'path';
+import { BonfireServer, IServerContext } from '../bonfire-server';
 
 export interface IOpenApiOptions {
     title: string;
@@ -23,9 +24,15 @@ export class BuildOpenApi {
         for (const controllerType of controllers) {
             const metas: IEndpointMeta[] = Reflect.getMetadata(Constants.ENDPOINT_KEY, controllerType);
             for (const endpoint of metas) {
+                const ctx: IServerContext = await BonfireServer.container.resolve('ctx');
+                const controllerMeta: { prefix?: string } = Reflect.getMetadata(
+                    Constants.CONTROLLER_KEY,
+                    controllerType,
+                );
+                const route = path.join(ctx.globalPrefix, `/${controllerMeta?.prefix || '/'}`, endpoint.route);
                 switch (endpoint.method) {
                     case 'get':
-                        doc.addPath(endpoint.route, {
+                        doc.addPath(route, {
                             get: {
                                 responses: {},
                             },
@@ -35,7 +42,7 @@ export class BuildOpenApi {
                         const params: IFunctionParamMeta[] = Reflect.getMetadata(endpoint.fn, controllerType) || [];
                         const body = params.find((param) => param.id == Constants.BODY);
                         console.warn(body?.paramType?.name);
-                        doc.addPath(endpoint.route, {
+                        doc.addPath(route, {
                             post: {
                                 requestBody: {
                                     content: body?.paramType
