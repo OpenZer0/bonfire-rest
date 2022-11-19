@@ -1,5 +1,5 @@
 import { Endpoint } from '../endpoint.decorator';
 
-export function Get(route: string) {
+export function Get(route: string = '/') {
     return Endpoint({ method: 'get', route });
 }

@@ -29,4 +29,5 @@ export interface IEndpointMeta {
     method: 'get' | 'post' | 'patch' | 'delete';
     route: string;
     fn: string;
+    fnReturn?: any;
 }

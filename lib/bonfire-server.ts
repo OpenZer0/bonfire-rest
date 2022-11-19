@@ -12,6 +12,7 @@ import { expressMap } from './decorator-map';
 import { Utils } from './common/Utils';
 import * as path from 'path';
 import { IMiddleware } from './middleware/middleware.interface';
+import { BuildOpenApi, IOpenApiOptions } from './openapi/build-openapi';
 
 export interface IServerContext {
     controllers: any[];
@@ -24,6 +25,7 @@ export interface IServerContext {
         isBearer: boolean;
         secret: string;
     };
+    openapi?: IOpenApiOptions;
 }
 
 export class BonfireServer {
@@ -45,6 +47,7 @@ export class BonfireServer {
                 globalPipes: [],
                 globalPrefix: '/',
                 globalMiddlewares: [],
+                openapi: { swaggerUi: 'swagger-ui', apiDocs: 'api-docs', title: 'myApp' },
             },
             ...this.ctx,
         };
@@ -69,6 +72,7 @@ export class BonfireServer {
 
     async build() {
         await this.prepare();
+        const doc = await BuildOpenApi.addOpenapi(this.ctx.server, this.ctx.openapi, this.ctx.controllers);
         for (const controller of this.ctx.controllers) {
             await this.setupController(controller);
         }
@@ -90,7 +94,7 @@ export class BonfireServer {
 
     private async createEndpoint(endpoint: IEndpointMeta, controllerType: Type, controller: any) {
         const controllerMeta: { prefix?: string } = Reflect.getMetadata(Constants.CONTROLLER_KEY, controllerType);
-        const route = path.join(`/${controllerMeta?.prefix || '/'}`, this.ctx.globalPrefix, endpoint.route);
+        const route = path.join(this.ctx.globalPrefix, `/${controllerMeta?.prefix || '/'}`, endpoint.route);
         this.logger.log(`Add route: ${endpoint.method.toUpperCase()} ${route}`);
         await this.ctx.server[endpoint.method](route, async (req: express.Request, res: express.Response) => {
             try {
