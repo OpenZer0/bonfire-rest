@@ -7,6 +7,8 @@ import * as swaggerUi from 'swagger-ui-express';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
 import * as path from 'path';
 import { BonfireServer, IServerContext } from '../bonfire-server';
+import { IApiDocsMeta } from '../decorators/openapi/result.decorator';
+import { SchemaBuilder } from './schema-builder';
 
 export interface IOpenApiOptions {
     title: string;
@@ -14,7 +16,7 @@ export interface IOpenApiOptions {
     apiDocs: string;
 }
 
-export class BuildOpenApi {
+export class OpenapiBuilder {
     static async addOpenapi(app: e.Express, options: IOpenApiOptions, controllers: Type[]) {
         const schemas = validationMetadatasToSchemas();
         const doc = new OpenApiBuilder().addTitle(options.title);
@@ -23,6 +25,8 @@ export class BuildOpenApi {
         }
         for (const controllerType of controllers) {
             const metas: IEndpointMeta[] = Reflect.getMetadata(Constants.ENDPOINT_KEY, controllerType);
+            const docsMeta: IApiDocsMeta = Reflect.getMetadata(Constants.API_DOCS_KEY, controllerType);
+
             for (const endpoint of metas) {
                 const ctx: IServerContext = await BonfireServer.container.resolve('ctx');
                 const controllerMeta: { prefix?: string } = Reflect.getMetadata(
@@ -34,39 +38,18 @@ export class BuildOpenApi {
                     case 'get':
                         doc.addPath(route, {
                             get: {
-                                responses: {},
+                                parameters: SchemaBuilder.createParameters(endpoint, docsMeta),
+                                responses: SchemaBuilder.createResponse(endpoint, docsMeta),
                             },
                         });
                         break;
                     case 'post':
                         const params: IFunctionParamMeta[] = Reflect.getMetadata(endpoint.fn, controllerType) || [];
-                        const body = params.find((param) => param.id == Constants.BODY);
-                        console.warn(body?.paramType?.name);
                         doc.addPath(route, {
                             post: {
-                                requestBody: {
-                                    content: body?.paramType
-                                        ? {
-                                              'application/json': {
-                                                  schema: { $ref: `#/components/schemas/${body?.paramType?.name}` },
-                                              },
-                                          }
-                                        : {},
-                                },
-                                responses: {
-                                    ['200']: endpoint.fnReturn
-                                        ? {
-                                              description: 'post test',
-                                              content: {
-                                                  'application/json': {
-                                                      schema: {
-                                                          $ref: `#/components/schemas/${endpoint.fnReturn?.name}`,
-                                                      },
-                                                  },
-                                              },
-                                          }
-                                        : {},
-                                },
+                                parameters: SchemaBuilder.createParameters(endpoint, docsMeta),
+                                requestBody: SchemaBuilder.createBody(docsMeta, params),
+                                responses: SchemaBuilder.createResponse(endpoint, docsMeta),
                             },
                         });
                         break;

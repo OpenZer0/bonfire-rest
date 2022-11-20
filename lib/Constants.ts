@@ -7,4 +7,5 @@ export const Constants = {
     HEADERS: 'HEADERS',
     ROUTE_PARAM: 'ROUTE_PARAM',
     CONTROLLER_KEY: 'CONTROLLER_KEY',
+    API_DOCS_KEY: 'API_DOCS_KEY',
 };

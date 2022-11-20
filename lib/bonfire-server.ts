@@ -12,7 +12,7 @@ import { expressMap } from './decorator-map';
 import { Utils } from './common/Utils';
 import * as path from 'path';
 import { IMiddleware } from './middleware/middleware.interface';
-import { BuildOpenApi, IOpenApiOptions } from './openapi/build-openapi';
+import { OpenapiBuilder, IOpenApiOptions } from './openapi/openapi-builder';
 
 export interface IServerContext {
     controllers: any[];
@@ -72,7 +72,7 @@ export class BonfireServer {
 
     async build() {
         await this.prepare();
-        const doc = await BuildOpenApi.addOpenapi(this.ctx.server, this.ctx.openapi, this.ctx.controllers);
+        const doc = await OpenapiBuilder.addOpenapi(this.ctx.server, this.ctx.openapi, this.ctx.controllers);
         for (const controller of this.ctx.controllers) {
             await this.setupController(controller);
         }

@@ -7,3 +7,14 @@ export class UserValidator {
     @IsNumber()
     age: number
 }
+
+export class OtherValidator {
+    @IsString()
+    lol: string
+
+    @IsString()
+    lol2: string
+
+    @IsNumber()
+    age: number
+}

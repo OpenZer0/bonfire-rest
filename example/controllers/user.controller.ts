@@ -9,31 +9,47 @@ import { Param } from '../../lib/decorators/param.decorator';
 import { FooService } from '../services/foo.service';
 import { UpperCasePipe } from '../services/upper.pipe';
 import { Get } from '../../lib/decorators/method/get.decorator';
-import {Controller} from "../../lib";
-import {UserValidator} from "../user.validator";
+import { Controller, Post } from "../../lib";
+import { OtherValidator, UserValidator } from "../user.validator";
+import { ApiDocs } from "../../lib/decorators/openapi/result.decorator";
 
 @Controller({prefix: "ddd"})
 export class UserController {
     constructor(private readonly foo: FooService) {}
 
+    @ApiDocs({resultType: UserValidator})
     @Get('/test')
-    getUsers(
-        @Req() req: Request,
-        @Res() res: Response,
-        @Query( 'test', [UpperCasePipe]) query: any,
-        @Headers('host', [UpperCasePipe]) headers: string,
+    async getUsers(
+      @Req() req: Request,
+      @Res() res: Response,
+      @Query('test', [UpperCasePipe]) query: any,
+      @Headers('host', [UpperCasePipe]) headers: string,
     ) {
         console.log(this.foo.getStr());
-        return [{ usnername: headers}];
+        return [{ usnername: headers }] as any;
     }
 
-    @Endpoint({ method: 'get', route: '/users/:id' })
+    @ApiDocs({resultType: UserValidator})
+    @Get('/users/:id')
     getUsersByid(
         @Req() req: Request,
         @Res() res: Response,
         @Query('test' ) query: any,
         @Headers('host' ) headers,
         @Param('id' ) id: string,
+    ) {
+        console.log('id', id);
+        res.send({ usnername: id });
+    }
+
+    @ApiDocs({resultType: OtherValidator})
+    @Post("/t1/:asd/:param2/:param3")
+    asd(
+      @Req() req: Request,
+      @Res() res: Response,
+      @Query('test' ) query: any,
+      @Headers('host' ) headers,
+      @Param('id' ) id: string,
     ) {
         console.log('id', id);
         res.send({ usnername: id });
