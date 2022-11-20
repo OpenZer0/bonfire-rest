@@ -12,6 +12,7 @@ import { Get } from '../../lib/decorators/method/get.decorator';
 import { Controller, Post } from "../../lib";
 import { OtherValidator, UserValidator } from "../user.validator";
 import { ApiDocs } from "../../lib/decorators/openapi/result.decorator";
+import { NotImplementedError } from "../../lib/error/http/bad-request.error";
 
 @Controller({prefix: "ddd"})
 export class UserController {
@@ -25,8 +26,7 @@ export class UserController {
       @Query('test', [UpperCasePipe]) query: any,
       @Headers('host', [UpperCasePipe]) headers: string,
     ) {
-        console.log(this.foo.getStr());
-        return [{ usnername: headers }] as any;
+       throw new NotImplementedError("idk", ["test"])
     }
 
     @ApiDocs({resultType: UserValidator})
