@@ -26,6 +26,7 @@ export interface IServerContext {
         secret: string;
     };
     openapi?: IOpenApiOptions;
+    assetFolders?: { root: string; path: string }[];
 }
 
 export class BonfireServer {
@@ -48,6 +49,7 @@ export class BonfireServer {
                 globalPrefix: '/',
                 globalMiddlewares: [],
                 openapi: { swaggerUi: 'swagger-ui', apiDocs: 'api-docs', title: 'myApp' },
+                assetFolders: [],
             },
             ...this.ctx,
         };
@@ -59,8 +61,13 @@ export class BonfireServer {
         BonfireServer.container.registerTypes(this.ctx.globalMiddlewares);
         BonfireServer.container.register('ctx', this.ctx);
 
+        for (const asset of this.ctx.assetFolders) {
+            const root = path.join('/', asset.root);
+            this.logger.log(`Asset folder serve: ${root} --> folder: ${asset.path}`);
+            this.ctx.server.use(root, express.static(asset.path));
+        }
         for (const middleware of this.ctx.globalMiddlewares) {
-            this.logger.log('Use middleware: ', middleware);
+            this.logger.log('Use middleware: ', middleware.name);
             const resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
             this.ctx.server.use(async (req, res, next) => await resolvedMiddleware.handle(req, res, next));
         }
