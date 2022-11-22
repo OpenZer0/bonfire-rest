@@ -9,6 +9,7 @@ import * as path from 'path';
 import { BonfireServer, IServerContext } from '../bonfire-server';
 import { IApiDocsMeta } from '../decorators/openapi/result.decorator';
 import { SchemaBuilder } from './schema-builder';
+import { Logger } from '../common/logger/logger';
 
 export interface IOpenApiOptions {
     title: string;
@@ -17,6 +18,7 @@ export interface IOpenApiOptions {
 }
 
 export class OpenapiBuilder {
+    static logger = new Logger(OpenapiBuilder.name);
     static async addOpenapi(app: e.Express, options: IOpenApiOptions, controllers: Type[]) {
         const schemas = validationMetadatasToSchemas();
         const doc = new OpenApiBuilder().addTitle(options.title);
@@ -57,6 +59,8 @@ export class OpenapiBuilder {
             }
         }
 
+
+        this.logger.log(`Openapi docs is available: /${options.swaggerUi}, /${options.apiDocs}`);
         app.get(path.join('/', options.apiDocs), (req, res) => {
             res.json(doc.rootDoc);
         });

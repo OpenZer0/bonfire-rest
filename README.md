@@ -3,8 +3,6 @@
 # bonfire-rest
 ### REST framework built on [express](https://github.com/expressjs/express) and [type-chef-di](https://github.com/OpenZer0/type-chef-di)
 
-# <span style="color: green">  !! the package is not released yet!! coming soon. </span>
-
 # Installation
 tsconfig.json
 ```json
@@ -14,7 +12,7 @@ tsconfig.json
 }
 ```
 ```
-npm install bonfire-rest // soon
+npm install bonfire-rest
 ```
 
 # Example of usage
@@ -74,7 +72,8 @@ async function main() {
             swaggerUi: "api-docs",
             apiDocs: "docs",
             title: "my-app"
-        }
+        },
+        assetFolders: [{root: "/assets", path: path.join(__dirname, "static")}]
     });
 
     server.listen(port, () => {
@@ -96,7 +95,7 @@ If you want to prefix all your routes, e.g. /api you can use `globalPrefix: "api
 You can prefix all specific controller's actions with base route:
 
 ```typescript
-@Controller({prefix: "/users"})
+@Controller("/users")
 export class UserController {
   // ...
 }
@@ -166,6 +165,31 @@ saveUser(@Res() res: Response) {
 }
 ```
 
+## Pipes
+Pipes can modify the value e.g. @Param, @Header, @Query.. You can chain them.
+```typescript
+export class UpperCasePipe implements IPipe<string> {
+  pipe(value: string): any {
+    return value?.toUpperCase();
+  }
+}
+
+@Controller( "ddd")
+export class UserController {
+    constructor(private readonly foo: FooService) {}
+
+    @ApiDocs({resultType: UserValidator})
+    @Get('/test')
+    async getUsers(
+      @Req() req: Request,
+      @Res() res: Response,
+      @Query('name', [UpperCasePipe]) query: any,
+    ) {
+       return query // if query name got John_Wick the pipe will transformed to JOHN_WICK
+    }
+    ...
+```
+
 # Validation
 
 for the request validation you can use class-validator
@@ -189,7 +213,7 @@ export class UserCreateDto implements IUser {
 }
 
 
-@Controller({prefix: "users"})
+@Controller("users")
 export class UsersController {
   constructor(private readonly userService: UserService) {
   }
@@ -237,3 +261,14 @@ it will automatically add the routes, return types, request body etc. based on c
   }
 
 ```
+you can directly specify with a class validator claas:
+
+```typescript
+  @ApiDocs({resultType: UserValidator})
+  @Post()
+  create(@Body() user: UserCreateDto): any {
+  
+  }
+
+```
+!! Openapi is under development

@@ -14,7 +14,7 @@ import { OtherValidator, UserValidator } from "../user.validator";
 import { ApiDocs } from "../../lib/decorators/openapi/result.decorator";
 import { NotImplementedError } from "../../lib/error/http/bad-request.error";
 
-@Controller({prefix: "ddd"})
+@Controller( "ddd")
 export class UserController {
     constructor(private readonly foo: FooService) {}
 

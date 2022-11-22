@@ -10,7 +10,8 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "build": "tsc -p .",
     "prepare-publish": "rm -rf ./build && npm run build  && cp *.json ./build && cp *.md ./build",
-    "local-publish": "npm run prepare-publish && npm publish ./build --registry http://localhost:4873/"
+    "local-publish": "npm run prepare-publish && npm publish ./build --registry http://localhost:4873/",
+    "npmjs-publish": "npm run prepare-publish && npm publish ./build"
   },
   "repository": {
     "type": "git",
