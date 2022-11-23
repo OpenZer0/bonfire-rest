@@ -13,3 +13,9 @@ export function Param(propKey?: string, pipes: Type<IPipe>[] = []) {
         saveExpressMeta<IParamOptions>(Constants.ROUTE_PARAM, target, key, parameterIndex, { key: propKey }, pipes);
     };
 }
+
+export function Params(pipes: Type<IPipe>[] = []) {
+    return (target: any, key: string | symbol, parameterIndex: number) => {
+        saveExpressMeta<IParamOptions>(Constants.ROUTE_PARAM, target, key, parameterIndex, { key: undefined }, pipes);
+    };
+}

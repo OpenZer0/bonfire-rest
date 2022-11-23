@@ -8,7 +8,13 @@ export interface IBodyOptions {
     prop?: string;
 }
 
-export function Body(propKey?: string, pipes: Type<IPipe>[] = []) {
+export function Body(pipes: Type<IPipe>[] = []) {
+    return (target: any, key: string | symbol, parameterIndex: number) => {
+        saveExpressMeta<IBodyOptions>(Constants.BODY, target, key, parameterIndex, { prop: undefined }, pipes);
+    };
+}
+
+export function BodyParam(propKey?: string, pipes: Type<IPipe>[] = []) {
     return (target: any, key: string | symbol, parameterIndex: number) => {
         saveExpressMeta<IBodyOptions>(Constants.BODY, target, key, parameterIndex, { prop: propKey }, pipes);
     };

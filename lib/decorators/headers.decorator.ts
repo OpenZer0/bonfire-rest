@@ -8,7 +8,13 @@ export interface IHeaderOptions {
     key?: string;
 }
 
-export function Headers(propKey: string, pipes: Type<IPipe>[] = []) {
+export function Headers(pipes: Type<IPipe>[] = []) {
+    return (target: any, key: string | symbol, parameterIndex: number) => {
+        saveExpressMeta<IHeaderOptions>(Constants.HEADERS, target, key, parameterIndex, { key: undefined }, pipes);
+    };
+}
+
+export function Header(propKey: string, pipes: Type<IPipe>[] = []) {
     return (target: any, key: string | symbol, parameterIndex: number) => {
         saveExpressMeta<IHeaderOptions>(Constants.HEADERS, target, key, parameterIndex, { key: propKey }, pipes);
     };

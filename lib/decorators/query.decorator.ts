@@ -8,7 +8,13 @@ export interface IQueryOptions {
     key?: string;
 }
 
-export function Query(propKey?: string, pipes: Type<IPipe>[] = []) {
+export function QueryParams(pipes: Type<IPipe>[] = []) {
+    return (target: any, key: string | symbol, parameterIndex: number) => {
+        saveExpressMeta<IQueryOptions>(Constants.QUERY, target, key, parameterIndex, { key: undefined }, pipes);
+    };
+}
+
+export function QueryParam(propKey?: string, pipes: Type<IPipe>[] = []) {
     return (target: any, key: string | symbol, parameterIndex: number) => {
         saveExpressMeta<IQueryOptions>(Constants.QUERY, target, key, parameterIndex, { key: propKey }, pipes);
     };
