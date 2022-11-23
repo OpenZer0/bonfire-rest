@@ -13,6 +13,7 @@ import { Utils } from './common/Utils';
 import * as path from 'path';
 import { IMiddleware } from './middleware/middleware.interface';
 import { OpenapiBuilder, IOpenApiOptions } from './openapi/openapi-builder';
+import { IMiddlewareMeta } from './decorators/middleware/middleware.decorator';
 
 export interface IServerContext {
     controllers: any[];

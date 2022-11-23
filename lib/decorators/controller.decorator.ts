@@ -1,7 +1,7 @@
 import { Keys } from 'type-chef-di';
 import { Constants } from '../Constants';
 
-export function Controller(prefix: string) {
+export function Controller(prefix?: string) {
     return (target: Function) => {
         let metadata: any = Reflect.getMetadata(Constants.CONTROLLER_KEY, target) || {};
         metadata = { ...metadata, prefix };

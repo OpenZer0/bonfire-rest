@@ -12,11 +12,23 @@ import { Get } from '../../lib/decorators/method/get.decorator';
 import { Controller, Post } from "../../lib";
 import { OtherValidator, UserValidator } from "../user.validator";
 import { ApiDocs } from "../../lib/decorators/openapi/result.decorator";
-import { NotImplementedError } from "../../lib/error/http/bad-request.error";
+import { NotImplementedError } from "../../lib/error/http/specific-http.error";
+import { LogMiddleware2, LogMiddleware3 } from "../middlewares/log.middleware";
+import { BeforeMiddleware } from "../../lib/decorators/middleware/before-middleware.decorator";
+import { AfterMiddleware } from "../../lib/decorators/middleware/after-middleware.decorator";
 
-@Controller( "ddd")
+@Controller("" )
 export class UserController {
     constructor(private readonly foo: FooService) {}
+
+    // @Middleware({beforeMiddlewares: [LogMiddleware2], afterMiddlewares: []})
+    @BeforeMiddleware(LogMiddleware2)
+    @BeforeMiddleware(LogMiddleware2)
+    @AfterMiddleware(LogMiddleware3)
+    @Get('/users')
+    getTest(){
+        return {test:"123"}
+    }
 
     @ApiDocs({resultType: UserValidator})
     @Get('/test')
@@ -25,8 +37,12 @@ export class UserController {
       @Res() res: Response,
       @Query('test', [UpperCasePipe]) query: any,
       @Headers('host', [UpperCasePipe]) headers: string,
+      @Query('err') err: string,
     ) {
-       throw new NotImplementedError("idk", ["test"])
+        if (err){
+            throw new NotImplementedError("idk", ["test"])
+        }
+        return {test: ""}
     }
 
     @ApiDocs({resultType: UserValidator})

@@ -35,7 +35,7 @@ export class LogMiddleware3 implements IMiddleware {
   constructor(private readonly stringFactory: StringFactory) {
   }
   handle(req: express.Request, res: express.Response, next: Function) {
-    console.log(`${LogMiddleware2.name} : after middleware`)
+    console.log(`${LogMiddleware3.name} : after middleware`)
     next()
   }
 }
