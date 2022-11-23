@@ -270,3 +270,16 @@ you can directly specify with a class validator claas:
 
 ```
 !! Openapi is under development
+
+
+## Environment variables
+An easy to use helper for process.env variables
+```typescript
+Env.asString(name: string): string
+Env.asNumber(name: string): number
+Env.asFloat(name: string): number
+Env.asArray(name): string[]
+Env.asArrayOfString(name): string[] 
+Env.asArrayOfNumber(name: string): number[] 
+Env.asArrayOfFloat(name: string): number[] 
+```
