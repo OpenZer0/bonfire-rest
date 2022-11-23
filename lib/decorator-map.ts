@@ -11,7 +11,7 @@ export interface IExpressMap {
 
 export const expressMap: IExpressMap = {
     [Constants.BODY]: (req: express.Request, res: express.Response, customOptions: IBodyOptions) => {
-        return req?.body;
+        return customOptions?.prop ? req?.body[customOptions?.prop] : req?.body;
     },
     [Constants.REQUEST]: (req: express.Request, res: express.Response) => {
         return req;
