@@ -95,22 +95,57 @@ export class BonfireServer {
         const controller = await BonfireServer.container.resolveByType(controllerType);
 
         for (const endpoint of meta) {
-            await this.createEndpoint(endpoint, controllerType, controller);
+            const middlewareMeta: Record<string, IMiddlewareMeta> =
+                Reflect.getMetadata(Constants.ENDPOINT_MIDDLEWARES, controllerType) || {};
+            await this.createEndpoint(endpoint, controllerType, controller, middlewareMeta[endpoint.fn]);
         }
     }
 
-    private async createEndpoint(endpoint: IEndpointMeta, controllerType: Type, controller: any) {
+    private async createEndpoint(
+        endpoint: IEndpointMeta,
+        controllerType: Type,
+        controller: any,
+        middlewareMeta?: IMiddlewareMeta,
+    ) {
         const controllerMeta: { prefix?: string } = Reflect.getMetadata(Constants.CONTROLLER_KEY, controllerType);
         const route = path.join(this.ctx.globalPrefix, `/${controllerMeta?.prefix || '/'}`, endpoint.route);
         this.logger.log(`Add route: ${endpoint.method.toUpperCase()} ${route}`);
-        await this.ctx.server[endpoint.method](route, async (req: express.Request, res: express.Response) => {
-            try {
-                const result = await this.handleRequest(req, res, controller, controllerType, endpoint);
-                this.responseHandler.handle(result, res);
-            } catch (e) {
-                this.errorHandler.handle(e, res);
-            }
-        });
+
+        const getBeforeMiddlewares = () => {
+            return Promise.all(
+                (middlewareMeta?.beforeMiddlewares || []).map(async (middleware) => {
+                    const resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
+                    return async (req, res, next) => {
+                        await resolvedMiddleware.handle(req, res, next);
+                    };
+                }),
+            );
+        };
+
+        const getAfterMiddlewares = () => {
+            return Promise.all(
+                (middlewareMeta?.afterMiddlewares || []).map(async (middleware) => {
+                    const resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
+                    return async (req, res, next) => {
+                        await resolvedMiddleware.handle(req, res, next);
+                    };
+                }),
+            );
+        };
+        await this.ctx.server[endpoint.method](
+            route,
+            await getBeforeMiddlewares(),
+            async (req: express.Request, res: express.Response, next: Function) => {
+                try {
+                    const result = await this.handleRequest(req, res, controller, controllerType, endpoint);
+                    this.responseHandler.handle(result, res);
+                } catch (e) {
+                    this.errorHandler.handle(e, req, res);
+                }
+                next()
+            },
+            ...(await getAfterMiddlewares()),
+        );
     }
 
     private async handleRequest(

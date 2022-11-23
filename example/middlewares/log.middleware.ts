@@ -19,3 +19,24 @@ export class LogMiddleware implements IMiddleware {
   }
 }
 
+@Injectable()
+export class LogMiddleware2 implements IMiddleware {
+  constructor(private readonly stringFactory: StringFactory) {
+  }
+  handle(req: express.Request, res: express.Response, next: Function) {
+    console.log(`${LogMiddleware2.name} : before middleware`)
+    next()
+  }
+}
+
+
+@Injectable()
+export class LogMiddleware3 implements IMiddleware {
+  constructor(private readonly stringFactory: StringFactory) {
+  }
+  handle(req: express.Request, res: express.Response, next: Function) {
+    console.log(`${LogMiddleware2.name} : after middleware`)
+    next()
+  }
+}
+
