@@ -1,4 +1,20 @@
-# 0.1.0 (2022-11-22)
+# [0.2.0](https://github.com/OpenZer0/bonfire-rest/compare/v0.1.0...v0.2.0) (2022-11-23)
+
+
+### Bug Fixes
+
+* body decorator ([c9acfe1](https://github.com/OpenZer0/bonfire-rest/commit/c9acfe15f051f08c63435d92859196261e2ecf58))
+* index, controller param, IErrorHandler interface, basic Metrics ([6c6e628](https://github.com/OpenZer0/bonfire-rest/commit/6c6e6283b69b1dbfc3287144786ae21288225cfe))
+
+
+### Features
+
+* env helper ([4f968d8](https://github.com/OpenZer0/bonfire-rest/commit/4f968d84485980775cf5a002945fc8381444881b))
+* middlewares decorator ([307671c](https://github.com/OpenZer0/bonfire-rest/commit/307671cfdb0e725b1af1bd7ccf0100f3041609bc))
+
+
+
+# [0.1.0](https://github.com/OpenZer0/bonfire-rest/compare/d17a9b20da3e315740ee6fcaf235f87b732545f2...v0.1.0) (2022-11-22)
 
 
 ### Bug Fixes
