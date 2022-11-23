@@ -83,16 +83,11 @@ async function main() {
 
 main();
 ```
+## Prefix routes:
 
-## Prefix all controllers routes
+- **Prefix all controllers routes:** If you want to prefix all your routes, e.g. /api you can use `globalPrefix: "api"` option
 
-If you want to prefix all your routes, e.g. /api you can use `globalPrefix: "api"` option
-
-
-
-## Prefix controller with base route
-
-You can prefix all specific controller's actions with base route:
+- **Prefix controller with base route:** You can prefix all specific controller's actions with base route:
 
 ```typescript
 @Controller("/users")
@@ -103,18 +98,20 @@ export class UserController {
 
 ## Inject route parameters
 
-You can use `@Param` decorator to inject parameters in your controller actions:
+You can use `@Param("...")` decorator to inject parameters in your controller actions:
 
 ```typescript
 @Get("/users/:id")
 getOne(@Param("id") id: string) { 
 }
 ```
-If you want to inject all parameters use `@Param()`.
+If you want to inject all parameters use `@Params()`.
 
 ## Inject query parameters
 
-To inject query parameters, use `@Query` decorator:
+To inject all query parameters, use `@Query()` decorator
+
+To inject specific query parameter, use `@QueryParam("...")` decorator:
 
 ```typescript
 @Get("/users")
@@ -132,25 +129,27 @@ saveUser(@Body() user: User) {
 }
 ```
 
-## Inject request body parameters
-To inject request body parameter, use @Body decorator with first param:
-
+To inject request body param, use `@BodyParam("...")` decorator
 ```typescript
 @Post("/users")
-saveUser(@Body("name") userName: string) {
+saveUser(@Body() user: User, @BodyParam("name") name: string) {
 }
 ```
 
 ## Inject request header parameters
-To inject request header parameter, use `@Header` decorator:
+To inject request header parameter, use `@Header("...")` decorator.
+To inject all request header parameter, use `@Headers()` decorator.
 
 ```typescript
 @Post("/users")
 saveUser(@Header("authorization") token: string) {
 }
 ```
-If you want to inject all header parameters use `@Header()` decorator.
-
+```typescript
+@Post("/users")
+saveUser(@Headers() allHeader: any) {
+}
+```
 ## Inject request
 ```typescript
 @Post("/users")
@@ -178,12 +177,11 @@ export class UpperCasePipe implements IPipe<string> {
 export class UserController {
     constructor(private readonly foo: FooService) {}
 
-    @ApiDocs({resultType: UserValidator})
     @Get('/test')
     async getUsers(
       @Req() req: Request,
       @Res() res: Response,
-      @Query('name', [UpperCasePipe]) query: any,
+      @QueryParam('name', [UpperCasePipe]) query: any,
     ) {
        return query // if query name got John_Wick the pipe will transformed to JOHN_WICK
     }
