@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { Body } from '../../lib/decorators/body.decorator';
+import { Body, BodyParam } from "../../lib/decorators/body.decorator";
 import { Endpoint } from '../../lib/decorators/endpoint.decorator';
 import { Req } from '../../lib/decorators/request.decorator';
 import { Res } from '../../lib/decorators/response.decorator';
-import { Query } from '../../lib/decorators/query.decorator';
-import { Headers } from '../../lib/decorators/headers.decorator';
+import { QueryParam } from '../../lib/decorators/query.decorator';
+import { Header, Headers } from "../../lib/decorators/headers.decorator";
 import { Param } from '../../lib/decorators/param.decorator';
 import { FooService } from '../services/foo.service';
 import { UpperCasePipe } from '../services/upper.pipe';
@@ -17,7 +17,7 @@ import { LogMiddleware2, LogMiddleware3 } from "../middlewares/log.middleware";
 import { BeforeMiddleware } from "../../lib/decorators/middleware/before-middleware.decorator";
 import { AfterMiddleware } from "../../lib/decorators/middleware/after-middleware.decorator";
 
-@Controller("" )
+@Controller()
 export class UserController {
     constructor(private readonly foo: FooService) {}
 
@@ -35,9 +35,9 @@ export class UserController {
     async getUsers(
       @Req() req: Request,
       @Res() res: Response,
-      @Query('test', [UpperCasePipe]) query: any,
-      @Headers('host', [UpperCasePipe]) headers: string,
-      @Query('err') err: string,
+      @QueryParam('test', [UpperCasePipe]) query: any,
+      @Header('host', [UpperCasePipe]) headers: string,
+      @QueryParam('err') err: string,
     ) {
         if (err){
             throw new NotImplementedError("idk", ["test"])
@@ -50,8 +50,8 @@ export class UserController {
     getUsersByid(
         @Req() req: Request,
         @Res() res: Response,
-        @Query('test' ) query: any,
-        @Headers('host' ) headers,
+        @QueryParam('test' ) query: any,
+        @Header('host' ) headers,
         @Param('id' ) id: string,
     ) {
         console.log('id', id);
@@ -63,8 +63,8 @@ export class UserController {
     asd(
       @Req() req: Request,
       @Res() res: Response,
-      @Query('test' ) query: any,
-      @Headers('host' ) headers,
+      @QueryParam('test' ) query: any,
+      @Header('host' ) headers,
       @Param('id' ) id: string,
     ) {
         console.log('id', id);
@@ -72,7 +72,7 @@ export class UserController {
     }
     
     @Endpoint({ method: 'post', route: '/users' })
-    getUsers2(@Body('username') body: UserValidator) {
+    getUsers2(@BodyParam('username') body: UserValidator) {
        return body
     }
 }

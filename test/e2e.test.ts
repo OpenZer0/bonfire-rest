@@ -23,9 +23,10 @@ describe('e2e', () => {
     });
 
     test('resolve @Body decorator', async () => {
-        const res = await requestWithSupertest.post('/post').send({ message: 'post body' }).expect(200);
+        const res = await requestWithSupertest.post('/post').send({ message: 'post body', paramTest:{test: 123} }).expect(200);
         expect(res.type).toEqual(expect.stringContaining('json'));
-        expect(JSON.stringify(res.body)).toBe(JSON.stringify({ message: 'post body' }));
+        expect(JSON.stringify(res.body.body)).toBe(JSON.stringify({ message: 'post body', paramTest:{test: 123} }));
+        expect(JSON.stringify(res.body.bodyParam)).toBe(JSON.stringify({test: 123} ));
     });
 
     test('resolve @Header decorator', async () => {
@@ -35,9 +36,10 @@ describe('e2e', () => {
     });
 
     test('resolve @Param decorator', async () => {
-        const res = await requestWithSupertest.post('/param/foo').expect(200);
+        const res = await requestWithSupertest.post('/param/foo/foo2').expect(200);
         expect(res.type).toEqual(expect.stringContaining('json'));
         expect(res.body.param).toBe('foo');
+        expect(JSON.stringify(res.body.params)).toBe(JSON.stringify( {id: "foo", id2: "foo2"}));
     });
 
     test('pipe test', async () => {

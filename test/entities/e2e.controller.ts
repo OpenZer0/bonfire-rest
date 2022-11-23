@@ -1,10 +1,9 @@
 import { Response } from 'express';
 import { Res } from '../../lib/decorators/response.decorator';
-import { Body } from '../../lib/decorators/body.decorator';
-import { Injectable } from '../../lib/index';
+import { Body, BodyParam } from "../../lib/decorators/body.decorator";
+import { Header, Injectable, Params } from "../../lib/index";
 import { Get } from '../../lib/decorators/method/get.decorator';
 import { Post } from '../../lib/decorators/method/post.decorator';
-import { Headers } from '../../lib/decorators/headers.decorator';
 import { Param } from '../../lib/decorators/param.decorator';
 import {UpperCasePipe} from "../../example/services/upper.pipe";
 
@@ -16,18 +15,18 @@ export class E2eController {
     }
 
     @Post('/post')
-    test1(@Res() res: Response, @Body() body: any) {
-        res.json(body);
+    bodyTest(@Res() res: Response, @Body() body: any, @BodyParam("paramTest") bodyParam: any) {
+        res.json({body, bodyParam});
     }
 
     @Get('/header')
-    test2(@Res() res: Response, @Headers('custom-header' ) header: string) {
+    test2(@Res() res: Response, @Header('custom-header') header: string) {
         res.json({ header: header });
     }
 
-    @Post('/param/:id')
-    test3(@Res() res: Response, @Param( 'id' ) id: string) {
-        res.json({ param: id });
+    @Post('/param/:id/:id2')
+    paramTest(@Res() res: Response, @Param( 'id' ) id: string, @Params() params: any) {
+        res.json({ param: id, params });
     }
     @Post('/pipe/:id')
     test4(@Res() res: Response, @Param( 'id' , [UpperCasePipe]) id: string) {
