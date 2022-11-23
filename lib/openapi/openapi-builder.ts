@@ -1,4 +1,4 @@
-import { OpenApiBuilder } from 'openapi3-ts';
+import { OpenApiBuilder, OpenAPIObject } from 'openapi3-ts';
 import { Type } from 'type-chef-di';
 import { IEndpointMeta, IFunctionParamMeta } from '../server-builder';
 import { Constants } from '../Constants';
@@ -12,7 +12,7 @@ import { SchemaBuilder } from './schema-builder';
 import { Logger } from '../common/logger/logger';
 
 export interface IOpenApiOptions {
-    title: string;
+    spec: Omit<OpenAPIObject, 'paths'>
     swaggerUi: string;
     apiDocs: string;
 }
@@ -21,7 +21,8 @@ export class OpenapiBuilder {
     static logger = new Logger(OpenapiBuilder.name);
     static async addOpenapi(app: e.Express, options: IOpenApiOptions, controllers: Type[]) {
         const schemas = validationMetadatasToSchemas();
-        const doc = new OpenApiBuilder().addTitle(options.title);
+        let doc = new OpenApiBuilder()
+        doc.rootDoc = {...doc.rootDoc, ...options.spec, paths: {}};
         for (const [key, value] of Object.entries(schemas)) {
             doc.addSchema(key, value);
         }
@@ -40,6 +41,7 @@ export class OpenapiBuilder {
                     case 'get':
                         doc.addPath(route, {
                             get: {
+                                ...docsMeta[endpoint.fn],
                                 parameters: SchemaBuilder.createParameters(endpoint, docsMeta),
                                 responses: SchemaBuilder.createResponse(endpoint, docsMeta),
                             },
@@ -49,9 +51,10 @@ export class OpenapiBuilder {
                         const params: IFunctionParamMeta[] = Reflect.getMetadata(endpoint.fn, controllerType) || [];
                         doc.addPath(route, {
                             post: {
+                                ...docsMeta[endpoint.fn],
                                 parameters: SchemaBuilder.createParameters(endpoint, docsMeta),
                                 requestBody: SchemaBuilder.createBody(docsMeta, params),
-                                responses: SchemaBuilder.createResponse(endpoint, docsMeta),
+                                responses: SchemaBuilder.createResponse(endpoint, docsMeta)
                             },
                         });
                         break;

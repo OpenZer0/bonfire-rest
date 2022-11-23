@@ -49,7 +49,7 @@ export class BonfireServer {
                 globalPipes: [],
                 globalPrefix: '/',
                 globalMiddlewares: [],
-                openapi: { swaggerUi: 'swagger-ui', apiDocs: 'api-docs', title: 'myApp' },
+                openapi: { swaggerUi: 'swagger-ui', apiDocs: 'api-docs', spec: {info: {title: "bonfire-app", version: "3"}, openapi: "idk"} },
                 assetFolders: [],
             },
             ...this.ctx,

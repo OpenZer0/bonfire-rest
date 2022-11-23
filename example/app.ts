@@ -6,7 +6,7 @@ import express from 'express';
 import * as path from "path";
 
 async function main() {
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 3001;
 
 
     const app = express()
@@ -16,8 +16,8 @@ async function main() {
         server: app,
         globalMiddlewares: [LogMiddleware],
         openapi: {
-            title: "myApp",
-            swaggerUi: "api-docs",
+            spec: {info: {title: "test project", version: "3", description: "this is the test project decription"}, openapi: "3.0.0"},
+            swaggerUi: "/",
             apiDocs: "docs"
         },
         assetFolders: [{root: "/assets", path: path.join(__dirname, "static")}]

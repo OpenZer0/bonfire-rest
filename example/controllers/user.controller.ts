@@ -30,7 +30,7 @@ export class UserController {
         return {test:"123"}
     }
 
-    @ApiDocs({resultType: UserValidator})
+    @ApiDocs({resultType: UserValidator, summary: "custom summary", description: "this is my description", tags: ["ttttttttttttttt"]})
     @Get('/test')
     async getUsers(
       @Req() req: Request,
