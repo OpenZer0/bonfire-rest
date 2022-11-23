@@ -28,7 +28,7 @@ export class OpenapiBuilder {
         }
         for (const controllerType of controllers) {
             const metas: IEndpointMeta[] = Reflect.getMetadata(Constants.ENDPOINT_KEY, controllerType);
-            const docsMeta: IApiDocsMeta = Reflect.getMetadata(Constants.API_DOCS_KEY, controllerType);
+            const docsMeta: IApiDocsMeta = Reflect.getMetadata(Constants.API_DOCS_KEY, controllerType) || {};
 
             for (const endpoint of metas) {
                 const ctx: IServerContext = await BonfireServer.container.resolve('ctx');
