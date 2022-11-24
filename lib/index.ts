@@ -13,7 +13,7 @@ export * from './decorators/method/post.decorator';
 export * from './decorators/controller.decorator';
 export * from './env/env';
 export * from './error/http/http-error';
-export * from './error/http/specific-http.error';
+export * from './error/http/bad-request.error';
 export * from './error/http/status-map';
 export * from 'type-chef-di';
 export { Request, Response, Express, Application } from 'express';

@@ -1,6 +1,6 @@
 import { HttpError } from './http-error';
 
-export class SpecificHttpError extends HttpError {
+export class BadRequestError extends HttpError {
     constructor(message: string, details?: any) {
         super(400, message, details);
     }

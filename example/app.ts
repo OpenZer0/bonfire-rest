@@ -4,9 +4,10 @@ import {ValidationPipe} from "../lib/services/pipe/validation.pipe";
 import { LogMiddleware } from "./middlewares/log.middleware";
 import express from 'express';
 import * as path from "path";
+import { Env } from "../lib";
 
 async function main() {
-    const port = process.env.PORT || 3001;
+    const port = Env.asNumber("PORT", 3000);
 
 
     const app = express()

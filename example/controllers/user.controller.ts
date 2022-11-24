@@ -9,10 +9,10 @@ import { Param } from '../../lib/decorators/param.decorator';
 import { FooService } from '../services/foo.service';
 import { UpperCasePipe } from '../services/upper.pipe';
 import { Get } from '../../lib/decorators/method/get.decorator';
-import { Controller, Post } from "../../lib";
+import { Controller, HttpError, Post } from "../../lib";
 import { OtherValidator, UserValidator } from "../user.validator";
 import { ApiDocs } from "../../lib/decorators/openapi/result.decorator";
-import { NotImplementedError } from "../../lib/error/http/specific-http.error";
+import { NotImplementedError } from "../../lib/error/http/bad-request.error";
 import { LogMiddleware2, LogMiddleware3 } from "../middlewares/log.middleware";
 import { BeforeMiddleware } from "../../lib/decorators/middleware/before-middleware.decorator";
 import { AfterMiddleware } from "../../lib/decorators/middleware/after-middleware.decorator";
@@ -30,7 +30,12 @@ export class UserController {
         return {test:"123"}
     }
 
-    @ApiDocs({resultType: UserValidator, summary: "custom summary", description: "this is my description", tags: ["ttttttttttttttt"]})
+    @ApiDocs({
+        resultType: UserValidator,
+        summary: "custom summary",
+        description: "this is my description",
+        tags: ["user"]
+    })
     @Get('/test')
     async getUsers(
       @Req() req: Request,
