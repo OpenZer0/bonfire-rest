@@ -11,7 +11,8 @@
     "build": "tsc -p .",
     "prepare-publish": "rm -rf ./build && npm run build  && cp *.json ./build && cp *.md ./build",
     "local-publish": "npm run prepare-publish && npm publish ./build --registry http://localhost:4873/",
-    "npmjs-publish": "npm run prepare-publish && npm publish ./build"
+    "npmjs-publish": "npm run prepare-publish && npm publish ./build",
+    "github-publish": "npm run prepare-publish && npm publish ./build --registry https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
