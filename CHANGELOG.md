@@ -1,3 +1,14 @@
+## [0.2.1](https://github.com/OpenZer0/bonfire-rest/compare/v0.2.0...v0.2.1) (2022-11-24)
+
+
+### Bug Fixes
+
+* env default ([892edf1](https://github.com/OpenZer0/bonfire-rest/commit/892edf1432193d96f194950b6f0a046744a924d4))
+* openapi builder if meta is undefined ([f283a82](https://github.com/OpenZer0/bonfire-rest/commit/f283a82e4589000cd305f51c011d4966f3fb34f1))
+* openapi support ([b6c7564](https://github.com/OpenZer0/bonfire-rest/commit/b6c7564766c6f6aba6776043da0a658b504b9b69))
+
+
+
 # [0.2.0](https://github.com/OpenZer0/bonfire-rest/compare/v0.1.0...v0.2.0) (2022-11-23)
 
 
