@@ -40,7 +40,7 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@OpenZer0'
+      - run: node -e "let pkg=require('./package.json'); pkg.name='@openzer0/bonfire-rest'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
       - run: npm ci
       - run: npm run github-publish
         env:
