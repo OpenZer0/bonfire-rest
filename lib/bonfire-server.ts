@@ -119,13 +119,16 @@ export class BonfireServer {
         const getBeforeMiddlewares = () => {
             return Promise.all(
                 (middlewareMeta?.beforeMiddlewares || []).map(async (middleware) => {
-                    console.log(middleware, typeof middleware == 'function')
                     let resolvedMiddleware: IMiddleware = middleware;
                     if (typeof middleware == 'function') {
                         resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
                     }
                     return async (req, res, next) => {
-                        await resolvedMiddleware.handle(req, res, next);
+                        try {
+                            await resolvedMiddleware.handle(req, res, next);
+                        } catch (e) {
+                            this.errorHandler.handle(e, req, res);
+                        }
                     };
                 }),
             );
@@ -134,13 +137,16 @@ export class BonfireServer {
         const getAfterMiddlewares = () => {
             return Promise.all(
                 (middlewareMeta?.afterMiddlewares || []).map(async (middleware) => {
-                    console.log(middleware, typeof middleware == 'function')
                     let resolvedMiddleware: IMiddleware = middleware;
                     if (typeof middleware == 'function') {
                         resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
                     }
                     return async (req, res, next) => {
-                        await resolvedMiddleware.handle(req, res, next);
+                        try {
+                            await resolvedMiddleware.handle(req, res, next);
+                        } catch (e) {
+                            this.errorHandler.handle(e, req, res);
+                        }
                     };
                 }),
             );
