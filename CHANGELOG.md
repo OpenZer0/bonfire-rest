@@ -1,3 +1,12 @@
+## [0.2.2](https://github.com/OpenZer0/bonfire-rest/compare/v0.2.1...v0.2.2) (2022-11-28)
+
+
+### Bug Fixes
+
+* middlewares can be new instance ([d46e80f](https://github.com/OpenZer0/bonfire-rest/commit/d46e80f198cd8ceeccfd8a24323141fe40a45f3d))
+
+
+
 ## [0.2.1](https://github.com/OpenZer0/bonfire-rest/compare/v0.2.0...v0.2.1) (2022-11-24)
 
 
