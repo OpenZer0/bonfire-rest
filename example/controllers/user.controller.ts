@@ -13,7 +13,7 @@ import { Controller, HttpError, Post } from "../../lib";
 import { OtherValidator, UserValidator } from "../user.validator";
 import { ApiDocs } from "../../lib/decorators/openapi/result.decorator";
 import { NotImplementedError } from "../../lib/error/http/bad-request.error";
-import { LogMiddleware2, LogMiddleware3 } from "../middlewares/log.middleware";
+import { LogMe, LogMiddleware2, LogMiddleware3 } from "../middlewares/log.middleware";
 import { BeforeMiddleware } from "../../lib/decorators/middleware/before-middleware.decorator";
 import { AfterMiddleware } from "../../lib/decorators/middleware/after-middleware.decorator";
 
@@ -23,6 +23,7 @@ export class UserController {
 
     // @Middleware({beforeMiddlewares: [LogMiddleware2], afterMiddlewares: []})
     @BeforeMiddleware(LogMiddleware2)
+    @BeforeMiddleware(new LogMe("this is an instance message"))
     @BeforeMiddleware(LogMiddleware2)
     @AfterMiddleware(LogMiddleware3)
     @Get('/users')

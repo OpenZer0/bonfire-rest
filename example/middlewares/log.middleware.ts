@@ -10,6 +10,16 @@ export class StringFactory {
 }
 
 @Injectable()
+export class LogMe implements IMiddleware {
+  constructor(private readonly message: string) {
+  }
+  handle(req: express.Request, res: express.Response, next: Function) {
+    console.log(this.message)
+    next()
+  }
+}
+
+@Injectable()
 export class LogMiddleware implements IMiddleware {
   constructor(private readonly stringFactory: StringFactory) {
   }

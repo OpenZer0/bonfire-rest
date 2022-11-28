@@ -18,7 +18,7 @@ async function main() {
         globalMiddlewares: [LogMiddleware],
         openapi: {
             spec: {info: {title: "test project", version: "3", description: "this is the test project decription"}, openapi: "3.0.0"},
-            swaggerUi: "/",
+            swaggerUi: "/docs2",
             apiDocs: "docs"
         },
         assetFolders: [{root: "/assets", path: path.join(__dirname, "static")}]

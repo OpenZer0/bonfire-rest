@@ -49,7 +49,11 @@ export class BonfireServer {
                 globalPipes: [],
                 globalPrefix: '/',
                 globalMiddlewares: [],
-                openapi: { swaggerUi: 'swagger-ui', apiDocs: 'api-docs', spec: {info: {title: "bonfire-app", version: "3"}, openapi: "3.0.0"} },
+                openapi: {
+                    swaggerUi: 'swagger-ui',
+                    apiDocs: 'api-docs',
+                    spec: { info: { title: 'bonfire-app', version: '3' }, openapi: '3.0.0' },
+                },
                 assetFolders: [],
             },
             ...this.ctx,
@@ -115,7 +119,11 @@ export class BonfireServer {
         const getBeforeMiddlewares = () => {
             return Promise.all(
                 (middlewareMeta?.beforeMiddlewares || []).map(async (middleware) => {
-                    const resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
+                    console.log(middleware, typeof middleware == 'function')
+                    let resolvedMiddleware: IMiddleware = middleware;
+                    if (typeof middleware == 'function') {
+                        resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
+                    }
                     return async (req, res, next) => {
                         await resolvedMiddleware.handle(req, res, next);
                     };
@@ -126,7 +134,11 @@ export class BonfireServer {
         const getAfterMiddlewares = () => {
             return Promise.all(
                 (middlewareMeta?.afterMiddlewares || []).map(async (middleware) => {
-                    const resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
+                    console.log(middleware, typeof middleware == 'function')
+                    let resolvedMiddleware: IMiddleware = middleware;
+                    if (typeof middleware == 'function') {
+                        resolvedMiddleware = await BonfireServer.container.resolveByType(middleware);
+                    }
                     return async (req, res, next) => {
                         await resolvedMiddleware.handle(req, res, next);
                     };
@@ -143,7 +155,7 @@ export class BonfireServer {
                 } catch (e) {
                     this.errorHandler.handle(e, req, res);
                 }
-                next()
+                next();
             },
             ...(await getAfterMiddlewares()),
         );

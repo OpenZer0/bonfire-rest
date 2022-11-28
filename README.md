@@ -240,7 +240,7 @@ export class LogMiddleware2 implements IMiddleware {
 
 // ...
     @BeforeMiddleware(LogMiddleware1)
-    @AfterMiddleware(LogMiddleware2, LogMiddleware2) // use as many you want
+    @AfterMiddleware(LogMiddleware2, LogMiddleware2) // use as many you want, can be new instance
     @Get('/users')
     getTest(){
         return {user: "test"}

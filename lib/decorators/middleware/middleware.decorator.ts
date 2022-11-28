@@ -3,8 +3,8 @@ import { IMiddleware } from '../../middleware/middleware.interface';
 import { Constants } from '../../Constants';
 
 export interface IMiddlewareMeta {
-    beforeMiddlewares: Type<IMiddleware>[];
-    afterMiddlewares: Type<IMiddleware>[];
+    beforeMiddlewares: Type<IMiddleware>[] | IMiddleware[];
+    afterMiddlewares: Type<IMiddleware>[] | IMiddleware[];
 }
 
 export function Middleware(options: IMiddlewareMeta) {
